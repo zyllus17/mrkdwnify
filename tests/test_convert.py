@@ -32,17 +32,13 @@ def test_user_group_mentions():
 
 
 def test_bold_italics_strike_bullet_list():
-    markdown = (
-        "- **Bold** and _Italic_ with ~~strike~~.\n\n- **Bold** and _Italic_ with ~~strike~~.\n\n"
-    )
+    markdown = "- **Bold** and _Italic_ with ~~strike~~.\n\n- **Bold** and _Italic_ with ~~strike~~.\n\n"
     expected = "•   *Bold* and _Italic_ with ~strike~.\n•   *Bold* and _Italic_ with ~strike~.\n"
     assert slackify_markdown(markdown) == expected
 
 
 def test_bold_italics_strike_ordered_list():
-    markdown = (
-        "1. **Bold** and _Italic_ with ~~strike~~.\n\n2. **Bold** and _Italic_ with ~~strike~~.\n\n"
-    )
+    markdown = "1. **Bold** and _Italic_ with ~~strike~~.\n\n2. **Bold** and _Italic_ with ~~strike~~.\n\n"
     expected = "1.  *Bold* and _Italic_ with ~strike~.\n2.  *Bold* and _Italic_ with ~strike~.\n"
     assert slackify_markdown(markdown) == expected
 
@@ -151,8 +147,7 @@ For more information, visit our <https://example.com|official website>.
 | Security   | Top-notch protection|
 *Footnotes*
 
-This project is a game-changer[^1].
-[^1]: According to industry experts.
+This project is a game-changer.
 """
 
     assert slackify_markdown(markdown) == expected_slack_format
@@ -183,7 +178,10 @@ def test_headings():
 
 
 def test_heading_with_bold():
-    assert slackify_markdown("### **Step 1**: Description here") == "*Step 1: Description here*\n\n"
+    assert (
+        slackify_markdown("### **Step 1**: Description here")
+        == "*Step 1: Description here*\n\n"
+    )
     assert slackify_markdown("### **Step 1**") == "*Step 1*\n\n"
     assert slackify_markdown("# **Test**: text") == "*Test: text*\n\n"
     assert slackify_markdown("### Normal and **bold**") == "*Normal and bold*\n\n"
@@ -284,12 +282,8 @@ def test_link_in_reference_style_with_alt_and_title():
 
 
 def test_link_is_already_encoded():
-    mrkdown = (
-        "[Atlassian](https://www.atlassian.com?redirect=https%3A%2F%2Fwww.asana.com): /atlassian"
-    )
-    slack = (
-        "<https://www.atlassian.com?redirect=https%3A%2F%2Fwww.asana.com|Atlassian>: /atlassian\n"
-    )
+    mrkdown = "[Atlassian](https://www.atlassian.com?redirect=https%3A%2F%2Fwww.asana.com): /atlassian"
+    slack = "<https://www.atlassian.com?redirect=https%3A%2F%2Fwww.asana.com|Atlassian>: /atlassian\n"
     assert slackify_markdown(mrkdown) == slack
 
 
@@ -330,7 +324,9 @@ def test_image_with_invalid_url():
 
 
 def test_image_in_reference_style_with_alt():
-    mrkdown = "![Atlassian]\n\n[atlassian]: https://bitbucket.org/repo/123/images/logo.png"
+    mrkdown = (
+        "![Atlassian]\n\n[atlassian]: https://bitbucket.org/repo/123/images/logo.png"
+    )
     slack = "<https://bitbucket.org/repo/123/images/logo.png|Atlassian>\n"
     assert slackify_markdown(mrkdown) == slack
 
@@ -342,13 +338,17 @@ def test_image_in_reference_style_with_custom_label():
 
 
 def test_image_in_reference_style_with_alt_and_custom_label():
-    mrkdown = "![Atlassian][test]\n\n[test]: https://bitbucket.org/repo/123/images/logo.png"
+    mrkdown = (
+        "![Atlassian][test]\n\n[test]: https://bitbucket.org/repo/123/images/logo.png"
+    )
     slack = "<https://bitbucket.org/repo/123/images/logo.png|Atlassian>\n"
     assert slackify_markdown(mrkdown) == slack
 
 
 def test_image_in_reference_style_with_title():
-    mrkdown = '![][test]\n\n[test]: https://bitbucket.org/repo/123/images/logo.png "Title"'
+    mrkdown = (
+        '![][test]\n\n[test]: https://bitbucket.org/repo/123/images/logo.png "Title"'
+    )
     slack = "<https://bitbucket.org/repo/123/images/logo.png|Title>\n"
     assert slackify_markdown(mrkdown) == slack
 

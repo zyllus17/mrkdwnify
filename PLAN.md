@@ -24,7 +24,7 @@
 
 ## Module 1 — Escaping & Special Characters
 **File:** `src/mrkdwnify/utils.py`  
-**Status:** `[ ]`  
+**Status:** `[x]`  
 **Bug:** B6 · **Tests to add:** `tests/test_escape.py`
 
 ### What breaks today
@@ -65,7 +65,7 @@ Confirm: mention renders as a real user ping, `<tag>` appears as literal text `<
 
 ## Module 2 — Footnotes & Unsupported Syntax
 **File:** `src/mrkdwnify/service.py` (pre-processing step)  
-**Status:** `[ ]`  
+**Status:** `[x]`  
 **Bug:** B4 · **Tests to add:** `tests/test_footnotes.py`
 
 ### What breaks today
@@ -107,7 +107,7 @@ are cleanly removed, and the text reads naturally.
 
 ## Module 3 — Horizontal Rules
 **File:** `src/mrkdwnify/converter.py`  
-**Status:** `[ ]`  
+**Status:** `[x]`  
 **Bug:** B3 · **Tests to add:** `tests/test_misc.py`
 
 ### What breaks today
@@ -138,7 +138,7 @@ Confirm a visible line of `────` appears between the two sections.
 
 ## Module 4 — Blockquotes
 **File:** `src/mrkdwnify/converter.py`  
-**Status:** `[ ]`  
+**Status:** `[x]`  
 **Bugs:** B1, B2 · **Tests to add:** `tests/test_blockquotes.py`
 
 ### What breaks today
@@ -193,7 +193,7 @@ Then post a blockquote containing a list and confirm each bullet is also quoted.
 
 ## Module 5 — Links
 **File:** `src/mrkdwnify/converter.py`  
-**Status:** `[ ]`  
+**Status:** `[x]`  
 **Bug:** B5 · **Tests to add:** `tests/test_links.py`
 
 ### What breaks today
@@ -223,7 +223,7 @@ Confirm it renders as a clickable link with **bold** display text in Slack.
 
 ## Module 6 — Code Blocks
 **File:** `src/mrkdwnify/converter.py`  
-**Status:** `[ ]`  
+**Status:** `[x]`  
 **Tests to add:** `tests/test_code.py`
 
 ### What works, what's missing
@@ -247,7 +247,7 @@ inside the code block, not as HTML entities.
 
 ## Module 7 — Inline Formatting
 **File:** `src/mrkdwnify/converter.py`  
-**Status:** `[ ]`  
+**Status:** `[x]`  
 **Tests to add:** `tests/test_inline.py`
 
 ### What works, what's missing
@@ -272,7 +272,7 @@ Confirm all three render correctly without interfering with each other.
 
 ## Module 8 — Headings
 **File:** `src/mrkdwnify/converter.py`  
-**Status:** `[ ]`  
+**Status:** `[x]`  
 **Tests to add:** `tests/test_headings.py`
 
 ### What works, what's missing
@@ -296,7 +296,7 @@ and that formatting inside the heading (italic, code) renders correctly.
 
 ## Module 9 — Lists
 **File:** `src/mrkdwnify/converter.py`  
-**Status:** `[ ]`  
+**Status:** `[x]`  
 **Tests to add:** `tests/test_lists.py`
 
 ### What works, what's missing
@@ -318,7 +318,7 @@ and that formatting inside list items (bold, italic) renders correctly.
 
 ## Module 10 — Images
 **File:** `src/mrkdwnify/converter.py`  
-**Status:** `[ ]`  
+**Status:** `[x]`  
 **Tests to add:** `tests/test_images.py`
 
 ### What works, what's missing
@@ -341,16 +341,16 @@ shows a link (and in some views, an image preview) with the correct alt text.
 
 | # | Module | Bug fixed | Tests | Status |
 |---|--------|-----------|-------|--------|
-| 1 | Escaping & Special Characters | B6 | `test_escape.py` | `[ ]` |
-| 2 | Footnotes & Unsupported Syntax | B4 | `test_footnotes.py` | `[ ]` |
-| 3 | Horizontal Rules | B3 | `test_misc.py` | `[ ]` |
-| 4 | Blockquotes | B1, B2 | `test_blockquotes.py` | `[ ]` |
-| 5 | Links | B5 | `test_links.py` | `[ ]` |
-| 6 | Code Blocks | — | `test_code.py` | `[ ]` |
-| 7 | Inline Formatting | — | `test_inline.py` | `[ ]` |
-| 8 | Headings | — | `test_headings.py` | `[ ]` |
-| 9 | Lists | — | `test_lists.py` | `[ ]` |
-| 10 | Images | — | `test_images.py` | `[ ]` |
+| 1 | Escaping & Special Characters | B6 | `test_escape.py` | `[x]` |
+| 2 | Footnotes & Unsupported Syntax | B4 | `test_footnotes.py` | `[x]` |
+| 3 | Horizontal Rules | B3 | `test_misc.py` | `[x]` |
+| 4 | Blockquotes | B1, B2 | `test_blockquotes.py` | `[x]` |
+| 5 | Links | B5 | `test_links.py` | `[x]` |
+| 6 | Code Blocks | — | `test_code.py` | `[x]` |
+| 7 | Inline Formatting | — | `test_inline.py` | `[x]` |
+| 8 | Headings | — | `test_headings.py` | `[x]` |
+| 9 | Lists | — | `test_lists.py` | `[x]` |
+| 10 | Images | — | `test_images.py` | `[x]` |
 
 ---
 

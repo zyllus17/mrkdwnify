@@ -1,10 +1,12 @@
 import re
+from collections.abc import MutableMapping, Sequence
 from typing import Any
 from urllib.parse import urlparse
 
 from markdown_it import MarkdownIt
 from markdown_it.renderer import RendererHTML
 from markdown_it.token import Token
+from markdown_it.utils import OptionsDict
 
 from mrkdwnify.utils import escape_specials
 
@@ -47,6 +49,7 @@ class MrkdwnConverter(RendererHTML):
         "tr_close",
         "hardbreak",
         "softbreak",
+        "hr",
     ]
 
     def __init__(self, markdown_text: str = ""):
@@ -56,7 +59,9 @@ class MrkdwnConverter(RendererHTML):
         self._list_depth = 0
         self._in_blockquote = 0
 
-    def render(self, tokens: list[Token], options: dict[str, Any], env: dict[str, Any]) -> str:
+    def render(
+        self, tokens: Sequence[Token], options: OptionsDict, env: MutableMapping[str, Any]
+    ) -> str:
         final_tokens = [t for t in tokens if t.type in self.SUPPORTED_TOKENS]
         return super().render(final_tokens, options, env)
 
@@ -73,64 +78,121 @@ class MrkdwnConverter(RendererHTML):
         return md.render(self.markdown_text)
 
     def hardbreak(
-        self, tokens: list[Token], idx: int, options: dict[str, Any], env: dict[str, Any]
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
     ) -> str:
         return "\n> " if self._in_blockquote else "\n"
 
     def softbreak(
-        self, tokens: list[Token], idx: int, options: dict[str, Any], env: dict[str, Any]
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
     ) -> str:
         return "\n> " if self._in_blockquote else "\n"
 
+    def hr(
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
+    ) -> str:
+        return "────────────────────\n\n"
+
     def text(
-        self, tokens: list[Token], idx: int, options: dict[str, Any], env: dict[str, Any]
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
     ) -> str:
         return escape_specials(tokens[idx].content)
 
     def heading_open(
-        self, tokens: list[Token], idx: int, options: dict[str, Any], env: dict[str, Any]
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
     ) -> str:
         self._in_heading = True
         return "*"
 
     def heading_close(
-        self, tokens: list[Token], idx: int, options: dict[str, Any], env: dict[str, Any]
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
     ) -> str:
         self._in_heading = False
         return "*\n\n"
 
     def strong_open(
-        self, tokens: list[Token], idx: int, options: dict[str, Any], env: dict[str, Any]
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
     ) -> str:
         return "" if self._in_heading else "*"
 
     def strong_close(
-        self, tokens: list[Token], idx: int, options: dict[str, Any], env: dict[str, Any]
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
     ) -> str:
         return "" if self._in_heading else "*"
 
     def em_open(
-        self, tokens: list[Token], idx: int, options: dict[str, Any], env: dict[str, Any]
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
     ) -> str:
         return "_"
 
     def em_close(
-        self, tokens: list[Token], idx: int, options: dict[str, Any], env: dict[str, Any]
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
     ) -> str:
         return "_"
 
     def s_open(
-        self, tokens: list[Token], idx: int, options: dict[str, Any], env: dict[str, Any]
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
     ) -> str:
         return "~"
 
     def s_close(
-        self, tokens: list[Token], idx: int, options: dict[str, Any], env: dict[str, Any]
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
     ) -> str:
         return "~"
 
     def link_open(
-        self, tokens: list[Token], idx: int, options: dict[str, Any], env: dict[str, Any]
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
     ) -> str:
         href = tokens[idx].attrs.get("href", "")
         title = tokens[idx].attrs.get("title", "")
@@ -140,90 +202,156 @@ class MrkdwnConverter(RendererHTML):
         return f"<{href}|"
 
     def link_close(
-        self, tokens: list[Token], idx: int, options: dict[str, Any], env: dict[str, Any]
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
     ) -> str:
-        content = tokens[idx].content
-        return f">: {content}\n" if content else ">"
+        return ">"
 
     def code_inline(
-        self, tokens: list[Token], idx: int, options: dict[str, Any], env: dict[str, Any]
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
     ) -> str:
         return f"`{tokens[idx].content}`"
 
     def code_block(
-        self, tokens: list[Token], idx: int, options: dict[str, Any], env: dict[str, Any]
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
     ) -> str:
         content = re.sub(r"^#!.*?\n", "", tokens[idx].content)
         return f"```\n{content}```\n"
 
     def fence(
-        self, tokens: list[Token], idx: int, options: dict[str, Any], env: dict[str, Any]
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
     ) -> str:
         content = re.sub(r"^#!.*?\n", "", tokens[idx].content)
         return f"```\n{content}```\n"
 
     def bullet_list_open(
-        self, tokens: list[Token], idx: int, options: dict[str, Any], env: dict[str, Any]
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
     ) -> str:
         self._list_depth += 1
         return ""
 
     def bullet_list_close(
-        self, tokens: list[Token], idx: int, options: dict[str, Any], env: dict[str, Any]
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
     ) -> str:
         self._list_depth -= 1
         return ""
 
     def list_item_open(
-        self, tokens: list[Token], idx: int, options: dict[str, Any], env: dict[str, Any]
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
     ) -> str:
         indent = "    " * (self._list_depth - 1)
-        return f"{indent}{tokens[idx].info}.  " if tokens[idx].info else f"{indent}•   "
+        prefix = "> " if self._in_blockquote > 0 else ""
+        return (
+            f"{prefix}{indent}{tokens[idx].info}.  "
+            if tokens[idx].info
+            else f"{prefix}{indent}•   "
+        )
 
     def list_item_close(
-        self, tokens: list[Token], idx: int, options: dict[str, Any], env: dict[str, Any]
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
     ) -> str:
         return ""
 
     def ordered_list_open(
-        self, tokens: list[Token], idx: int, options: dict[str, Any], env: dict[str, Any]
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
     ) -> str:
         self._list_depth += 1
         return ""
 
     def ordered_list_close(
-        self, tokens: list[Token], idx: int, options: dict[str, Any], env: dict[str, Any]
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
     ) -> str:
         self._list_depth -= 1
         return ""
 
     def paragraph_open(
-        self, tokens: list[Token], idx: int, options: dict[str, Any], env: dict[str, Any]
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
     ) -> str:
+        if self._in_blockquote > 0 and self._list_depth == 0:
+            return "> "
         return ""
 
     def paragraph_close(
-        self, tokens: list[Token], idx: int, options: dict[str, Any], env: dict[str, Any]
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
     ) -> str:
         return "\n"
 
     def blockquote_open(
-        self, tokens: list[Token], idx: int, options: dict[str, Any], env: dict[str, Any]
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
     ) -> str:
         self._in_blockquote += 1
-        return "> "
+        return ""
 
     def blockquote_close(
-        self, tokens: list[Token], idx: int, options: dict[str, Any], env: dict[str, Any]
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
     ) -> str:
         self._in_blockquote -= 1
         return "\n"
 
     def image(
-        self, tokens: list[Token], idx: int, options: dict[str, Any], env: dict[str, Any]
+        self,
+        tokens: Sequence[Token],
+        idx: int,
+        options: OptionsDict,
+        env: MutableMapping[str, Any],
     ) -> str:
-        src = tokens[idx].attrs.get("src", "")
-        title = tokens[idx].attrs.get("title", "")
+        src = str(tokens[idx].attrs.get("src", ""))
+        title = str(tokens[idx].attrs.get("title", ""))
         display_text = tokens[idx].content or title
 
         parsed_url = urlparse(src)
