@@ -48,10 +48,12 @@ class MrkdwnConverter(RendererHTML):
         "softbreak",
     ]
 
-    def __init__(self, markdown_text: str):
+    def __init__(self, markdown_text: str = ""):
         super().__init__()
         self.markdown_text = markdown_text
         self._in_heading = False
+        self._list_depth = 0
+        self._in_blockquote = 0
 
     def render(
         self, tokens: List[Token], options: Dict[str, Any], env: Dict[str, Any]
@@ -74,12 +76,12 @@ class MrkdwnConverter(RendererHTML):
     def hardbreak(
         self, tokens: List[Token], idx: int, options: Dict[str, Any], env: Dict[str, Any]
     ) -> str:
-        return "\n"
+        return "\n> " if self._in_blockquote else "\n"
 
     def softbreak(
         self, tokens: List[Token], idx: int, options: Dict[str, Any], env: Dict[str, Any]
     ) -> str:
-        return "\n"
+        return "\n> " if self._in_blockquote else "\n"
 
     def text(
         self, tokens: List[Token], idx: int, options: Dict[str, Any], env: Dict[str, Any]
@@ -132,8 +134,11 @@ class MrkdwnConverter(RendererHTML):
         self, tokens: List[Token], idx: int, options: Dict[str, Any], env: Dict[str, Any]
     ) -> str:
         href = tokens[idx].attrs.get("href", "")
+        title = tokens[idx].attrs.get("title", "")
         only_link = tokens[idx + 1].nesting == -1
-        return f"<{href}" if only_link else f"<{href}|"
+        if only_link:
+            return f"<{href}|{title}" if title else f"<{href}"
+        return f"<{href}|"
 
     def link_close(
         self, tokens: List[Token], idx: int, options: Dict[str, Any], env: Dict[str, Any]
@@ -161,17 +166,20 @@ class MrkdwnConverter(RendererHTML):
     def bullet_list_open(
         self, tokens: List[Token], idx: int, options: Dict[str, Any], env: Dict[str, Any]
     ) -> str:
+        self._list_depth += 1
         return ""
 
     def bullet_list_close(
         self, tokens: List[Token], idx: int, options: Dict[str, Any], env: Dict[str, Any]
     ) -> str:
+        self._list_depth -= 1
         return ""
 
     def list_item_open(
         self, tokens: List[Token], idx: int, options: Dict[str, Any], env: Dict[str, Any]
     ) -> str:
-        return f"{tokens[idx].info}.  " if tokens[idx].info else "•   "
+        indent = "    " * (self._list_depth - 1)
+        return f"{indent}{tokens[idx].info}.  " if tokens[idx].info else f"{indent}•   "
 
     def list_item_close(
         self, tokens: List[Token], idx: int, options: Dict[str, Any], env: Dict[str, Any]
@@ -181,11 +189,13 @@ class MrkdwnConverter(RendererHTML):
     def ordered_list_open(
         self, tokens: List[Token], idx: int, options: Dict[str, Any], env: Dict[str, Any]
     ) -> str:
+        self._list_depth += 1
         return ""
 
     def ordered_list_close(
         self, tokens: List[Token], idx: int, options: Dict[str, Any], env: Dict[str, Any]
     ) -> str:
+        self._list_depth -= 1
         return ""
 
     def paragraph_open(
@@ -201,11 +211,13 @@ class MrkdwnConverter(RendererHTML):
     def blockquote_open(
         self, tokens: List[Token], idx: int, options: Dict[str, Any], env: Dict[str, Any]
     ) -> str:
+        self._in_blockquote += 1
         return "> "
 
     def blockquote_close(
         self, tokens: List[Token], idx: int, options: Dict[str, Any], env: Dict[str, Any]
     ) -> str:
+        self._in_blockquote -= 1
         return "\n"
 
     def image(

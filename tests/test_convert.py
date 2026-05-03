@@ -117,14 +117,14 @@ Welcome to the *Project X* documentation. This project aims to revolutionize the
 *Features*
 
 1.  *User-Friendly Interface*
-•   Intuitive design
-•   Responsive layouts
+    •   Intuitive design
+    •   Responsive layouts
 2.  *Performance*
-•   High-speed processing
-•   Low latency
+    •   High-speed processing
+    •   Low latency
 3.  *Security*
-•   Data encryption
-•   Regular security audits
+    •   Data encryption
+    •   Regular security audits
 *Code Example*
 
 Here's a simple Python function:
@@ -399,14 +399,37 @@ def test_user_mention():
     assert slackify_markdown(mrkdown) == slack
 
 
-# Todo: Add title support
-# def test_link_in_reference_style_with_title():
-#     mrkdown = '[][test]\n\n[test]: http://atlassian.com "Title"'
-#     slack = '<http://atlassian.com|Title>\n'
-#     assert slackify_markdown(mrkdown) == slack
+def test_link_with_title():
+    mrkdown = '[](http://atlassian.com "Atlassian")'
+    slack = "<http://atlassian.com|Atlassian>\n"
+    assert slackify_markdown(mrkdown) == slack
 
-# Todo: Add title support
-# def test_link_with_title():
-#     mrkdown = '[](http://atlassian.com "Atlassian")'
-#     slack = '<http://atlassian.com|Atlassian>\n'
-#     assert slackify_markdown(mrkdown) == slack
+
+def test_link_in_reference_style_with_title():
+    mrkdown = '[][test]\n\n[test]: http://atlassian.com "Title"'
+    slack = "<http://atlassian.com|Title>\n"
+    assert slackify_markdown(mrkdown) == slack
+
+
+def test_nested_unordered_list():
+    mrkdown = "- Item 1\n  - Sub-item 1\n  - Sub-item 2\n- Item 2"
+    slack = "•   Item 1\n    •   Sub-item 1\n    •   Sub-item 2\n•   Item 2\n"
+    assert slackify_markdown(mrkdown) == slack
+
+
+def test_nested_ordered_list():
+    mrkdown = "1. Item 1\n   1. Sub-item 1\n   2. Sub-item 2\n2. Item 2"
+    slack = "1.  Item 1\n    1.  Sub-item 1\n    2.  Sub-item 2\n2.  Item 2\n"
+    assert slackify_markdown(mrkdown) == slack
+
+
+def test_nested_mixed_list():
+    mrkdown = "1. Ordered\n   - Bullet\n2. Ordered 2"
+    slack = "1.  Ordered\n    •   Bullet\n2.  Ordered 2\n"
+    assert slackify_markdown(mrkdown) == slack
+
+
+def test_multiline_blockquote():
+    mrkdown = "> Line 1\n> Line 2\n> Line 3"
+    slack = "> Line 1\n> Line 2\n> Line 3\n\n"
+    assert slackify_markdown(mrkdown) == slack

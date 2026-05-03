@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mrkdwnify"
-version = "0.1.0"
+version = "0.2.0"
 description = "Convert Markdown to Slack-compatible mrkdwn formatting"
 readme = "readme.md"
 authors = [
